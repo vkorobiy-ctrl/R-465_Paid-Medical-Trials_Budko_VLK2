@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sleep Test — Registration</title>
+<style>
+  :root{
+    --midnight:      #060A18;
+    --midnight-deep: #03050F;
+    --surface:       #0D1430;
+    --surface-line:  rgba(150, 185, 255, 0.14);
+    --blue-soft:     #93B6FF;
+    --blue-deep:     #3F6FE4;
+    --violet:        #A78BFA;
+    --violet-deep:   #6C57E8;
+    --ink:           #F4F7FF;
+    --ink-muted:     #9EAECF;
+    --ink-faint:     #6F7FA3;
+    --danger:        #FF9FB2;
+
+    --radius-card:   28px;
+    --radius-field:  15px;
+
+    --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    --ease: cubic-bezier(.22, .61, .36, 1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html, body { min-height: 100%; }
+
+  body{
+    margin: 0;
+    font-family: var(--font-body);
+    color: var(--ink);
+    background:
+      radial-gradient(1100px 700px at 78% -10%, rgba(108, 87, 232, 0.30), transparent 62%),
+      radial-gradient(900px 600px at 8% 108%, rgba(63, 111, 228, 0.26), transparent 60%),
+      linear-gradient(168deg, var(--midnight) 0%, var(--midnight-deep) 100%);
+    background-attachment: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ---------- night sky ---------- */
+  .sky{
+    position: fixed;
+    inset: -10% -10% -10% -10%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .sky span{
+    position: absolute;
+    inset: 0;
+    display: block;
+    background-repeat: no-repeat;
+    animation: twinkle 7s var(--ease) infinite;
+  }
+  .sky .layer-a{
+    background-image:
+      radial-gradient(1.6px 1.6px at 12% 22%, rgba(255,255,255,.95), transparent 100%),
+      radial-gradient(1.2px 1.2px at 26% 12%, rgba(200,220,255,.75), transparent 100%),
+      radial-gradient(1.8px 1.8px at 41% 31%, rgba(255,255,255,.85), transparent 100%),
+      radial-gradient(1.1px 1.1px at 63% 16%, rgba(190,205,255,.7), transparent 100%),
+      radial-gradient(1.5px 1.5px at 79% 27%, rgba(255,255,255,.9), transparent 100%),
+      radial-gradient(1.2px 1.2px at 91% 41%, rgba(210,225,255,.7), transparent 100%),
+      radial-gradient(1.4px 1.4px at 17% 61%, rgba(255,255,255,.8), transparent 100%),
+      radial-gradient(1.1px 1.1px at 34% 78%, rgba(195,215,255,.65), transparent 100%),
+      radial-gradient(1.7px 1.7px at 57% 88%, rgba(255,255,255,.85), transparent 100%),
+      radial-gradient(1.2px 1.2px at 84% 71%, rgba(205,220,255,.7), transparent 100%),
+      radial-gradient(1.3px 1.3px at 68% 55%, rgba(255,255,255,.6), transparent 100%),
+      radial-gradient(1.1px 1.1px at 5%  45%, rgba(200,215,255,.6), transparent 100%);
+  }
+  .sky .layer-b{
+    animation-duration: 11s;
+    animation-delay: -3.5s;
+    background-image:
+      radial-gradient(1.3px 1.3px at 21% 37%, rgba(167, 139, 250, .85), transparent 100%),
+      radial-gradient(1px 1px   at 47% 8%,   rgba(255,255,255,.7), transparent 100%),
+      radial-gradient(1.5px 1.5px at 72% 44%, rgba(147, 182, 255, .8), transparent 100%),
+      radial-gradient(1px 1px   at 88% 12%,  rgba(255,255,255,.6), transparent 100%),
+      radial-gradient(1.4px 1.4px at 9%  84%, rgba(167, 139, 250, .7), transparent 100%),
+      radial-gradient(1px 1px   at 44% 66%,  rgba(255,255,255,.55), transparent 100%),
+      radial-gradient(1.5px 1.5px at 95% 88%, rgba(147, 182, 255, .7), transparent 100%),
+      radial-gradient(1.2px 1.2px at 30% 51%, rgba(255,255,255,.5), transparent 100%),
+      radial-gradient(1px 1px   at 61% 73%,  rgba(200,215,255,.5), transparent 100%);
+  }
+  @keyframes twinkle{
+    0%, 100% { opacity: .55; }
+    50%      { opacity: 1; }
+  }
+
+  /* ---------- card ---------- */
+  .card{
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 528px;
+    padding: 42px 44px 36px;
+    border-radius: var(--radius-card);
+    border: 1px solid var(--surface-line);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,.015) 42%, rgba(255,255,255,0) 100%),
+      linear-gradient(180deg, rgba(19, 27, 58, .92), rgba(9, 14, 34, .94));
+    box-shadow:
+      0 1px 0 rgba(255,255,255,.06) inset,
+      0 40px 90px -28px rgba(2, 4, 14, .95),
+      0 0 0 1px rgba(3, 5, 15, .4);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    animation: rise .9s var(--ease) both;
+  }
+  @keyframes rise{
+    from { opacity: 0; transform: translateY(18px) scale(.985); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .brand{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 11px;
+    letter-spacing: .17em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 30px;
+  }
+  .brand svg{ display: block; opacity: .85; }
+
+  .head{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .head h1{
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 7vw, 2.6rem);
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+    margin: 0;
+  }
+
+  /* waxing moon = registration progress */
+  .moon{ flex: 0 0 auto; width: 58px; height: 58px; }
+  .moon-glow{ filter: drop-shadow(0 0 12px rgba(147, 182, 255, .45)); }
+  .moon .shadow-disc{ transition: cx .7s var(--ease); }
+
+  .subtitle{
+    margin: 16px 0 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+    max-width: 42ch;
+  }
+
+  .rule{
+    height: 1px;
+    margin: 28px 0 26px;
+    background: linear-gradient(90deg, rgba(147,182,255,.28), rgba(167,139,250,.18) 45%, transparent);
+    border: 0;
+  }
+
+  /* ---------- form ---------- */
+  .grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 16px;
+  }
+  .field.span-2{ grid-column: 1 / -1; }
+
+  label{
+    display: block;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    color: #C4D2F0;
+    margin-bottom: 8px;
+  }
+
+  input[type="text"], input[type="email"]{
+    width: 100%;
+    padding: 14px 16px;
+    font: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    background: rgba(255,255,255,.045);
+    border: 1px solid rgba(147,182,255,.16);
+    border-radius: var(--radius-field);
+    outline: none;
+    transition: border-color .25s var(--ease), background .25s var(--ease), box-shadow .25s var(--ease), transform .25s var(--ease);
+  }
+  input::placeholder{ color: #5F6E92; }
+  input[type="text"]:hover, input[type="email"]:hover{
+    border-color: rgba(147,182,255,.3);
+    background: rgba(255,255,255,.06);
+  }
+  input[type="text"]:focus, input[type="email"]:focus{
+    border-color: rgba(147,182,255,.62);
+    background: rgba(255,255,255,.075);
+    box-shadow: 0 0 0 4px rgba(99, 128, 220, .18);
+  }
+
+  .field.invalid input{
+    border-color: rgba(255, 138, 160, .55);
+    box-shadow: 0 0 0 4px rgba(255, 120, 150, .12);
+  }
+  .field.invalid input:focus{
+    border-color: rgba(255, 138, 160, .8);
+  }
+
+  .msg{
+    display: none;
+    margin-top: 7px;
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--danger);
+  }
+  .field.invalid .msg{
+    display: block;
+    animation: nudge .3s var(--ease) both;
+  }
+  @keyframes nudge{
+    from { opacity: 0; transform: translateY(-3px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  /* ---------- agreement ---------- */
+  .agree{ margin-top: 24px; }
+  .agree-row{
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+  }
+  input[type="checkbox"]{
+    appearance: none;
+    -webkit-appearance: none;
+    flex: 0 0 auto;
+    width: 21px;
+    height: 21px;
+    margin: 0;
+    border: 1px solid rgba(147,182,255,.32);
+    border-radius: 7px;
+    background: rgba(255,255,255,.05);
+    cursor: pointer;
+    position: relative;
+    transition: background .22s var(--ease), border-color .22s var(--ease), box-shadow .22s var(--ease);
+  }
+  input[type="checkbox"]:hover{ border-color: rgba(147,182,255,.55); }
+  input[type="checkbox"]:checked{
+    background: linear-gradient(140deg, var(--blue-deep), var(--violet-deep));
+    border-color: transparent;
+    box-shadow: 0 6px 16px -6px rgba(108, 87, 232, .9);
+  }
+  input[type="checkbox"]::after{
+    content: "";
+    position: absolute;
+    left: 6px; top: 3px;
+    width: 6px; height: 11px;
+    border: 2px solid #fff;
+    border-top: 0; border-left: 0;
+    border-radius: 1px;
+    transform: rotate(42deg) scale(.4);
+    opacity: 0;
+    transition: opacity .18s var(--ease), transform .18s var(--ease);
+  }
+  input[type="checkbox"]:checked::after{ opacity: 1; transform: rotate(42deg) scale(1); }
+
+  .agree-text{
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    user-select: none;
+  }
+  .policy{
+    font: inherit;
+    color: var(--blue-soft);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: rgba(147,182,255,.4);
+    text-underline-offset: 3px;
+    transition: color .2s var(--ease), text-decoration-color .2s var(--ease);
+  }
+  .policy:hover{ color: #C3D6FF; text-decoration-color: rgba(195,214,255,.8); }
+
+  #agreeField.invalid .msg{ display: block; margin-left: 33px; }
+
+  .disclosure{
+    display: none;
+    margin: 14px 0 0 33px;
+    padding: 13px 15px;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--ink-muted);
+    border-left: 2px solid rgba(167,139,250,.5);
+    border-radius: 0 10px 10px 0;
+    background: rgba(147,182,255,.05);
+  }
+  .disclosure.open{ display: block; animation: nudge .3s var(--ease) both; }
+
+  /* ---------- primary button ---------- */
+  .btn{
+    display: block;
+    width: 100%;
+    margin-top: 28px;
+    padding: 17px 22px;
+    font: inherit;
+    font-size: 15.5px;
+    font-weight: 600;
+    letter-spacing: .01em;
+    color: #fff;
+    border: 0;
+    border-radius: 17px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #4C7BF0 0%, #6A5CEA 52%, #8B6BF0 100%);
+    box-shadow: 0 14px 34px -14px rgba(90, 100, 240, .95), 0 1px 0 rgba(255,255,255,.22) inset;
+    transition: transform .22s var(--ease), box-shadow .22s var(--ease), filter .22s var(--ease);
+  }
+  .btn:hover{
+    transform: translateY(-2px);
+    filter: saturate(1.08) brightness(1.05);
+    box-shadow: 0 20px 44px -14px rgba(100, 110, 250, 1), 0 1px 0 rgba(255,255,255,.26) inset;
+  }
+  .btn:active{ transform: translateY(0); }
+
+  :focus-visible{
+    outline: 2px solid var(--blue-soft);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  .foot{
+    margin: 22px 0 0;
+    text-align: center;
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- screen transitions ---------- */
+  .screen{ transition: opacity .32s var(--ease), transform .32s var(--ease); }
+  .screen.leaving{
+    opacity: 0;
+    transform: translateY(-8px) scale(.972);
+    pointer-events: none;
+  }
+  .screen.entering{ animation: fadeScale .6s var(--ease) both; }
+  @keyframes fadeScale{
+    from { opacity: 0; transform: translateY(14px) scale(.962); }
+    to   { opacity: 1; transform: none; }
+  }
+  .hidden{ display: none !important; }
+
+  /* ---------- success / sleep test stages ---------- */
+  .stage{
+    text-align: center;
+    padding: 8px 0 4px;
+  }
+  .stage .stage-mark{
+    width: 76px; height: 76px;
+    margin: 0 auto 26px;
+    filter: drop-shadow(0 0 26px rgba(167, 139, 250, .5));
+  }
+  .stage h2{
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 6vw, 2.15rem);
+    letter-spacing: -0.01em;
+    margin: 0 0 12px;
+  }
+  .stage p{
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink-muted);
+  }
+  .stage .note{
+    margin-top: 8px;
+    font-size: 13.5px;
+    color: var(--ink-faint);
+  }
+  .status{
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 26px;
+    padding: 15px 18px;
+    font-size: 14px;
+    color: #DCE6FF;
+    border: 1px solid rgba(147,182,255,.22);
+    border-radius: 16px;
+    background: rgba(147,182,255,.07);
+  }
+  .status.show{ display: flex; animation: nudge .35s var(--ease) both; }
+  .dot{
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--blue-soft);
+    box-shadow: 0 0 0 0 rgba(147,182,255,.6);
+    animation: pulse 2.1s var(--ease) infinite;
+  }
+  @keyframes pulse{
+    0%   { box-shadow: 0 0 0 0 rgba(147,182,255,.55); }
+    70%  { box-shadow: 0 0 0 11px rgba(147,182,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(147,182,255,0); }
+  }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 560px){
+    body{ padding: 24px 14px; align-items: flex-start; }
+    .card{ padding: 30px 22px 26px; border-radius: 24px; }
+    .grid{ grid-template-columns: 1fr; }
+    .head{ gap: 14px; }
+    .moon{ width: 46px; height: 46px; }
+    .brand{ margin-bottom: 24px; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .001ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="sky" aria-hidden="true">
+  <span class="layer-a"></span>
+  <span class="layer-b"></span>
+</div>
+
+<main class="card">
+
+  <div class="brand">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.8 8.8 0 1 0 11.1 11.1Z"
+            stroke="#93B6FF" stroke-width="1.6" stroke-linejoin="round"/>
+    </svg>
+    Somnora Sleep Lab
+  </div>
+
+  <!-- ============ REGISTRATION ============ -->
+  <section id="registration" class="screen">
+
+    <div class="head">
+      <svg class="moon moon-glow" viewBox="0 0 100 100" aria-hidden="true">
+        <defs>
+          <radialGradient id="moonFace" cx="38%" cy="32%" r="78%">
+            <stop offset="0%"  stop-color="#FFFFFF"/>
+            <stop offset="55%" stop-color="#DCE7FF"/>
+            <stop offset="100%" stop-color="#A9BEF0"/>
+          </radialGradient>
+          <mask id="waxMask">
+            <circle cx="50" cy="50" r="34" fill="#fff"/>
+            <circle id="shadowDisc" class="shadow-disc" cx="50" cy="50" r="34" fill="#000"/>
+          </mask>
+        </defs>
+        <circle cx="50" cy="50" r="34" fill="none" stroke="rgba(147,182,255,.28)" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="34" fill="url(#moonFace)" mask="url(#waxMask)"/>
+      </svg>
+      <h1>Sleep Test</h1>
+    </div>
+
+    <p class="subtitle">Complete your registration to begin your personalized sleep assessment.</p>
+
+    <hr class="rule" />
+
+    <form id="signupForm" novalidate>
+      <div class="grid">
+
+        <div class="field" data-field="firstName">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" placeholder="Enter your first name"
+                 autocomplete="given-name" aria-describedby="firstName-msg" />
+          <p class="msg" id="firstName-msg"></p>
+        </div>
+
+        <div class="field" data-field="lastName">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" placeholder="Enter your last name"
+                 autocomplete="family-name" aria-describedby="lastName-msg" />
+          <p class="msg" id="lastName-msg"></p>
+        </div>
+
+        <div class="field span-2" data-field="middleName">
+          <label for="middleName">Middle Name</label>
+          <input type="text" id="middleName" name="middleName" placeholder="Enter your middle name"
+                 autocomplete="additional-name" aria-describedby="middleName-msg" />
+          <p class="msg" id="middleName-msg"></p>
+        </div>
+
+        <div class="field span-2" data-field="email">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" placeholder="Enter your email address"
+                 autocomplete="email" aria-describedby="email-msg" />
+          <p class="msg" id="email-msg"></p>
+        </div>
+
+      </div>
+
+      <div class="agree field" id="agreeField" data-field="agree">
+        <label class="agree-row" for="agree">
+          <input type="checkbox" id="agree" name="agree" aria-describedby="agree-msg" />
+          <span class="agree-text">
+            I agree to the
+            <button type="button" class="policy" data-policy="terms">Terms of Use</button>
+            and
+            <button type="button" class="policy" data-policy="privacy">Privacy Policy</button>.
+          </span>
+        </label>
+        <p class="msg" id="agree-msg"></p>
+        <p class="disclosure" id="disclosure"></p>
+      </div>
+
+      <button type="submit" class="btn">Start Sleep Test</button>
+    </form>
+
+    <p class="foot">Takes about 6 minutes. Your answers stay on this device.</p>
+  </section>
+
+  <!-- ============ SUCCESS ============ -->
+  <section id="success" class="screen stage hidden" aria-live="polite">
+    <svg class="stage-mark" viewBox="0 0 100 100" aria-hidden="true">
+      <defs>
+        <radialGradient id="fullFace" cx="36%" cy="30%" r="80%">
+          <stop offset="0%"  stop-color="#FFFFFF"/>
+          <stop offset="52%" stop-color="#E2EAFF"/>
+          <stop offset="100%" stop-color="#A99CF0"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50" cy="50" r="42" fill="rgba(167,139,250,.14)"/>
+      <circle cx="50" cy="50" r="34" fill="url(#fullFace)"/>
+      <circle cx="38" cy="41" r="5"   fill="rgba(120,140,210,.16)"/>
+      <circle cx="60" cy="56" r="7.5" fill="rgba(120,140,210,.13)"/>
+      <circle cx="55" cy="34" r="3.5" fill="rgba(120,140,210,.14)"/>
+    </svg>
+
+    <h2>Success!</h2>
+    <p>Your registration has been completed successfully.</p>
+    <p class="note">Your personalized sleep assessment is ready.</p>
+
+    <button type="button" class="btn" id="continueBtn">Continue to Sleep Test</button>
+  </section>
+
+  <!-- ============ SLEEP TEST ============ -->
+  <section id="sleeptest" class="screen stage hidden" aria-live="polite">
+    <svg class="stage-mark" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="42" fill="rgba(147,182,255,.10)"/>
+      <circle cx="50" cy="50" r="34" fill="none" stroke="rgba(147,182,255,.28)" stroke-width="1.5"/>
+      <g transform="translate(50 50) scale(2.05) translate(-12 -12)">
+        <path d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.8 8.8 0 1 0 11.1 11.1Z"
+              fill="url(#crescentFace)"/>
+      </g>
+      <defs>
+        <linearGradient id="crescentFace" x1="30%" y1="20%" x2="80%" y2="90%">
+          <stop offset="0%"  stop-color="#FFFFFF"/>
+          <stop offset="60%" stop-color="#D9E4FF"/>
+          <stop offset="100%" stop-color="#A99CF0"/>
+        </linearGradient>
+      </defs>
+      <circle cx="70" cy="30" r="1.9" fill="rgba(255,255,255,.85)"/>
+      <circle cx="78" cy="42" r="1.3" fill="rgba(167,139,250,.9)"/>
+      <circle cx="64" cy="21" r="1.2" fill="rgba(255,255,255,.6)"/>
+    </svg>
+
+    <h2>Sleep Test</h2>
+    <p>Your assessment is about to begin.</p>
+
+    <button type="button" class="btn" id="beginBtn">Begin Assessment</button>
+
+    <div class="status" id="assessmentStatus">
+      <span class="dot"></span>
+      <span>Assessment Ready</span>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  var form        = document.getElementById("signupForm");
+  var registration= document.getElementById("registration");
+  var success     = document.getElementById("success");
+  var sleeptest   = document.getElementById("sleeptest");
+  var continueBtn = document.getElementById("continueBtn");
+  var beginBtn    = document.getElementById("beginBtn");
+  var assessment  = document.getElementById("assessmentStatus");
+  var shadowDisc  = document.getElementById("shadowDisc");
+  var disclosure  = document.getElementById("disclosure");
+  var agreeBox    = document.getElementById("agree");
+
+  var NAME_RE  = /^[\p{L}][\p{L}\s'’.\-]*$/u;
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/;
+
+  var rules = [
+    { id: "firstName",  label: "First name"  },
+    { id: "lastName",   label: "Last name"   },
+    { id: "middleName", label: "Middle name" },
+    { id: "email",      label: "Email address", email: true }
+  ];
+
+  function fieldWrap(id) {
+    return document.querySelector('[data-field="' + id + '"]');
+  }
+
+  function setError(id, message) {
+    var wrap = fieldWrap(id);
+    if (!wrap) return;
+    wrap.classList.add("invalid");
+    var msg = document.getElementById(id + "-msg");
+    if (msg) msg.textContent = message;
+  }
+
+  function clearError(id) {
+    var wrap = fieldWrap(id);
+    if (!wrap) return;
+    wrap.classList.remove("invalid");
+    var msg = document.getElementById(id + "-msg");
+    if (msg) msg.textContent = "";
+  }
+
+  function checkText(rule) {
+    var input = document.getElementById(rule.id);
+    var value = input.value.trim();
+
+    if (!value) return rule.label + " is required.";
+    if (rule.email) {
+      if (!EMAIL_RE.test(value)) return "Enter a valid email address, like name@example.com.";
+      return null;
+    }
+    if (value.length < 2) return rule.label + " must be at least 2 characters.";
+    if (!NAME_RE.test(value)) return "Use letters, spaces, hyphens, and apostrophes only.";
+    return null;
+  }
+
+  /* --- waxing moon reflects how much of the form is complete --- */
+  function updateMoon() {
+    var done = 0;
+    rules.forEach(function (rule) {
+      if (!checkText(rule)) done++;
+    });
+    if (agreeBox.checked) done++;
+
+    var progress = done / (rules.length + 1);   // 0 → new moon, 1 → full moon
+    shadowDisc.setAttribute("cx", String(50 - 68 * progress));
+  }
+
+  /* --- live clearing of messages while typing --- */
+  rules.forEach(function (rule) {
+    var input = document.getElementById(rule.id);
+
+    input.addEventListener("input", function () {
+      if (fieldWrap(rule.id).classList.contains("invalid") && !checkText(rule)) {
+        clearError(rule.id);
+      }
+      updateMoon();
+    });
+
+    input.addEventListener("blur", function () {
+      if (input.value.trim()) {
+        var problem = checkText(rule);
+        if (problem) { setError(rule.id, problem); } else { clearError(rule.id); }
+      }
+    });
+  });
+
+  agreeBox.addEventListener("change", function () {
+    if (agreeBox.checked) clearError("agree");
+    updateMoon();
+  });
+
+  /* --- policy disclosures --- */
+  var policyText = {
+    terms: "Terms of Use — This sleep test is for personal wellness insight only and does not provide a medical diagnosis. Discuss any concerning results with a qualified clinician.",
+    privacy: "Privacy Policy — This page runs entirely in your browser. Nothing you enter is sent anywhere, stored on a server, or shared with a third party."
+  };
+
+  Array.prototype.forEach.call(document.querySelectorAll(".policy"), function (btn) {
+    btn.addEventListener("click", function (event) {
+      event.preventDefault();
+      var key = btn.getAttribute("data-policy");
+      var text = policyText[key];
+      if (disclosure.classList.contains("open") && disclosure.textContent === text) {
+        disclosure.classList.remove("open");
+        return;
+      }
+      disclosure.textContent = text;
+      disclosure.classList.add("open");
+    });
+  });
+
+  /* --- screen transitions: fade + slight scale, no reload, no URL change --- */
+  function goToScreen(fromScreen, toScreen, focusTarget) {
+    fromScreen.classList.add("leaving");
+
+    window.setTimeout(function () {
+      fromScreen.classList.add("hidden");
+      fromScreen.classList.remove("leaving");
+
+      toScreen.classList.remove("hidden");
+      toScreen.classList.remove("entering");
+      /* force a reflow so the entering animation restarts every time */
+      void toScreen.offsetWidth;
+      toScreen.classList.add("entering");
+
+      if (focusTarget) focusTarget.focus();
+    }, 320);
+  }
+
+  /* --- submit --- */
+  form.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    var firstInvalid = null;
+
+    rules.forEach(function (rule) {
+      var problem = checkText(rule);
+      if (problem) {
+        setError(rule.id, problem);
+        if (!firstInvalid) firstInvalid = document.getElementById(rule.id);
+      } else {
+        clearError(rule.id);
+      }
+    });
+
+    if (!agreeBox.checked) {
+      setError("agree", "Please accept the Terms of Use and Privacy Policy to continue.");
+      if (!firstInvalid) firstInvalid = agreeBox;
+    } else {
+      clearError("agree");
+    }
+
+    updateMoon();
+
+    if (firstInvalid) {
+      firstInvalid.focus();
+      return;
+    }
+
+    goToScreen(registration, success, continueBtn);
+  });
+
+  /* --- success → sleep test --- */
+  continueBtn.addEventListener("click", function () {
+    goToScreen(success, sleeptest, beginBtn);
+  });
+
+  /* --- sleep test → ready --- */
+  beginBtn.addEventListener("click", function () {
+    beginBtn.classList.add("hidden");
+    assessment.classList.add("show");
+  });
+
+  updateMoon();
+})();
+</script>
+</body>
+</html>
